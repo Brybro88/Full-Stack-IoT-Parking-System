@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis | Estacionamiento IoT</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+
+<body class="dark-theme">
+    <header>
+        <div class="header-content">
+            <h1><i class="fa-solid fa-warehouse"></i> Dashboard</h1>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/"><i class="fa-solid fa-satellite-dish"></i> En Vivo</a></li>
+                    <li><a href="/analisis" class="active"><i class="fa-solid fa-chart-pie"></i> Análisis</a></li>
+                </ul>
+            </nav>
+            
+            <div class="theme-switcher">
+                <i class="fa-solid fa-sun"></i>
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle" checked>
+                    <span class="slider round"></span>
+                </label>
+                <i class="fa-solid fa-moon"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+
+        <div class="card">
+            <h2></h2>
+            <div class="filter-controls">
+            </div>
+            
+            <div class="card">
+    <h2>Estadísticas de Ocupación</h2>
+    <div class="filter-controls">
+        <span>Mostrar datos de:</span>
+        <button class="filter-btn active" data-filter="today">Hoy</button>
+        <button class="filter-btn" data-filter="7days">Últimos 7 días</button>
+        <button class="filter-btn" data-filter="all">Histórico</button>
+    </div>
+    
+    <div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="stat-box" style="background-color: transparent; border: none;">
+            <h3 id="stat-libre">--</h3>
+            <p>Eventos "Libre"</p>
+        </div>
+        <div class="stat-box" style="background-color: transparent; border: none;">
+            <h3 id="stat-ocupado">--</h3>
+            <p>Eventos "Ocupado"</p>
+        </div>
+        <div class="stat-box" style="background-color: transparent; border: none;">
+            <h3 id="stat-maniobra">--</h3>
+            <p>Eventos "Aprox/Maniobra"</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2><i class="fa-solid fa-chart-pie"></i> Distribución de Estados</h2>
+    <div id="state-donut-chart" style="min-height: 350px;">
+        </div>
+</div>
+
+<div class="card">
+    <h2><i class="fa-solid fa-clock"></i> Distribución de Tiempo (%)</h2>
+    <div id="time-donut-chart" style="min-height: 350px;">
+        </div>
+</div>
+                <div class="card card-full">
+            <h2>Mapa de Calor de Ocupación</h2>
+            <p>Horas más "calientes" (con más eventos "Ocupado") durante la semana.</p>
+            <div id="heatmap-chart">
+                </div>
+        </div>
+        
+        <div class="card card-full">
+            <h2><i class="fa-solid fa-cloud-sun-rain"></i> Análisis Ambiental</h2>
+            <div class="stats-grid" style="margin-bottom: 20px;">
+                <div class="stat-box">
+                    <h3 id="stat-temp-avg">-- °C</h3>
+                    <p>Temp. Promedio</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="stat-temp-max">-- °C</h3>
+                    <p>Temp. Máxima</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="stat-hum-avg">-- %</h3>
+                    <p>Hum. Promedio</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="stat-hum-max">-- %</h3>
+                    <p>Hum. Máxima</p>
+                </div>
+            </div>
+            <div id="env-trend-chart"></div>
+        </div>
+
+        <div class="card card-full">
+            <h2><i class="fa-solid fa-chart-line"></i> Tendencia de Ruido Ambiental</h2>
+            <p>Promedio del nivel de ruido agrupado por hora del día.</p>
+            <div id="noise-event-chart"></div>
+        </div>
+
+    </main>
+    
+    <script src="/analisis.js"></script>
+</body>
+</html>

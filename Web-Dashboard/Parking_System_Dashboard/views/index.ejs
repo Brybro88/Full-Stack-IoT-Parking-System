@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pro | Estacionamiento IoT</title>
+    
+    <!-- Fuentes e Iconos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Hoja de Estilos -->
+    <link rel="stylesheet" href="/style.css">
+    
+    <!-- Librerías de Gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/gaugeJS/dist/gauge.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="dark-theme">
+    <header>
+        <div class="header-content">
+            <h1><i class="fa-solid fa-warehouse"></i> Dashboard</h1>
+            
+            <!-- Menú de Navegación -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/" class="active"><i class="fa-solid fa-satellite-dish"></i> En Vivo</a></li>
+                    <li><a href="/analisis"><i class="fa-solid fa-chart-pie"></i> Análisis</a></li>
+                </ul>
+            </nav>
+            
+            <div class="theme-switcher">
+                <i class="fa-solid fa-sun"></i>
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle" checked>
+                    <span class="slider round"></span>
+                </label>
+                <i class="fa-solid fa-moon"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        
+        <!-- Tarjeta de Estado Principal -->
+        <div id="status-card" class="card status-card">
+            <div id="status-display" class="status-box inicializando skeleton"> <!-- 'skeleton' se quita con JS -->
+                <div class="status-pulse"></div>
+                <span id="status-text">ESPERANDO...</span>
+            </div>
+            <p class="timestamp">Última actualización: 
+                <span id="last-update" class="skeleton skeleton-text">--:--:--</span> <!-- 'skeleton' se quita con JS -->
+            </p>
+        </div> <!-- <- ¡¡CORREGIDO!! Faltaba este </div> de cierre -->
+
+        <!-- Tarjetas de Sensores (Gauges) -->
+        <div class="card sensor-card gauge-card">
+            <h3>
+                <i class="fa-solid fa-ruler-vertical"></i> Distancia
+                <i class="fa-solid fa-expand expand-icon" data-sensor="distancia" aria-label="Ver detalles de distancia"></i>
+            </h3>
+            <canvas id="distancia-gauge"></canvas>
+            <!-- ¡CORREGIDO! Clases 'skeleton' añadidas aquí -->
+            <div id="distancia-value" class="gauge-value skeleton skeleton-text">-- cm</div>
+        </div>
+        <div class="card sensor-card gauge-card">
+            <h3>
+                <i class="fa-solid fa-temperature-half"></i> Temperatura
+                <i class="fa-solid fa-expand expand-icon" data-sensor="temperatura" aria-label="Ver detalles de temperatura"></i>
+            </h3>
+            <canvas id="temperatura-gauge"></canvas>
+            <!-- ¡CORREGIDO! Clases 'skeleton' añadidas aquí -->
+            <div id="temperatura-value" class="gauge-value skeleton skeleton-text">-- °C</div>
+        </div>
+        <div class="card sensor-card gauge-card">
+            <h3>
+                <i class="fa-solid fa-droplet"></i> Humedad
+                <i class="fa-solid fa-expand expand-icon" data-sensor="humedad" aria-label="Ver detalles de humedad"></i>
+            </h3>
+            <canvas id="humedad-gauge"></canvas>
+            <!-- ¡CORREGIDO! Clases 'skeleton' añadidas aquí -->
+            <div id="humedad-value" class="gauge-value skeleton skeleton-text">-- %</div>
+        </div>
+        <div class="card sensor-card gauge-card">
+            <h3>
+                <i class="fa-solid fa-volume-high"></i> Nivel de Ruido
+                <span id="ruido-status-badge" class="status-badge normal">Normal</span>
+                <i class="fa-solid fa-expand expand-icon" data-sensor="ruido" aria-label="Ver detalles de ruido"></i>
+            </h3>
+            <canvas id="ruido-gauge"></canvas>
+            <!-- ¡CORREGIDO! Clases 'skeleton' añadidas aquí -->
+            <div id="ruido-value" class="gauge-value skeleton skeleton-text">--</div>
+        </div>
+
+        <!-- Tarjeta de Gráfica de Líneas -->
+        <div class="card chart-card">
+            <h2>Actividad de Sensores (Últimos 10 eventos)</h2>
+            <canvas id="historyChart"></canvas>
+        </div>
+        
+        <!-- Tarjeta de Historial (Tabla) -->
+        <div class="card logs-card">
+            <h2><i class="fa-solid fa-timeline"></i> Historial de Cambios</h2>
+            <div class="table-container">
+                <table id="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Estado</th>
+                            <th>Distancia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Las filas se insertan con JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    
+    <script src="/dashboard.js"></script>
+</body>
+</html>

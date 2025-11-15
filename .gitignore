@@ -1,0 +1,27 @@
+# --- Archivos Sensibles (¡NUNCA SUBIR!) ---
+**/serviceAccountKey.json
+*.env
+
+# --- Archivos de Sistema Operativo ---
+.DS_Store
+Thumbs.db
+
+# --- PlatformIO (ESP32) ---
+.pio/
+.vscode/
+
+# --- Node.js (Web Dashboard) ---
+**/node_modules/
+npm-debug.log
+
+# --- Android Studio (App) ---
+**/build/
+.gradle/
+*.apk
+*.aab
+local.properties
+
+# --- R (Análisis) ---
+.Rhistory
+.RData
+.Rproj.user
