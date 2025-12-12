@@ -23,7 +23,20 @@
 <body class="dark-theme">
     <header>
         <div class="header-content">
-            <h1><i class="fa-solid fa-warehouse"></i> Dashboard</h1>
+            <!-- Logo Animado con Estado de Conexión -->
+            <div class="header-brand">
+                <div class="logo-container">
+                    <i class="fa-solid fa-warehouse logo-icon"></i>
+                    <div class="logo-glow"></div>
+                </div>
+                <div class="brand-text">
+                    <h1>IoT Parking</h1>
+                    <div class="connection-status">
+                        <div id="connection-led" class="status-led connected"></div>
+                        <span id="connection-text" class="status-text">Conectado</span>
+                    </div>
+                </div>
+            </div>
             
             <!-- Menú de Navegación -->
             <nav class="main-nav">
@@ -33,6 +46,31 @@
                 </ul>
             </nav>
             
+            <!-- Mini Stats Badges -->
+            <div class="quick-stats">
+                <div class="stat-badge" title="Espacios Ocupados">
+                    <i class="fa-solid fa-car"></i>
+                    <span id="quick-ocupados">-</span>
+                </div>
+                <div class="stat-badge" title="Temperatura Actual">
+                    <i class="fa-solid fa-temperature-half"></i>
+                    <span id="quick-temp">--°</span>
+                </div>
+                <div class="stat-badge" title="Distancia">
+                    <i class="fa-solid fa-ruler"></i>
+                    <span id="quick-dist">--cm</span>
+                </div>
+            </div>
+            
+            <!-- Centro de Notificaciones -->
+            <div class="notification-center">
+                <button class="icon-button" id="notification-btn" aria-label="Notificaciones">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="notification-badge" class="notification-badge hidden">0</span>
+                </button>
+            </div>
+            
+            <!-- Theme Switcher -->
             <div class="theme-switcher">
                 <i class="fa-solid fa-sun"></i>
                 <label class="switch">
@@ -41,7 +79,36 @@
                 </label>
                 <i class="fa-solid fa-moon"></i>
             </div>
+            
+            <!-- User Profile Dropdown -->
+            <div class="user-profile">
+                <button class="profile-button" id="profile-btn" aria-label="Perfil de usuario">
+                    <div class="avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span class="user-name">Admin</span>
+                    <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                </button>
+                <div class="profile-dropdown hidden" id="profile-dropdown">
+                    <a href="#" class="dropdown-item">
+                        <i class="fa-solid fa-user-gear"></i>
+                        Configuración
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Estadísticas
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
+        
+        <!-- Gradiente Animado Inferior -->
+        <div class="header-gradient-bar"></div>
     </header>
 
     <main class="dashboard-grid">

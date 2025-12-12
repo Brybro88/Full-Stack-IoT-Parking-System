@@ -71,10 +71,21 @@ class MainActivity : AppCompatActivity() {
     // porque pertenece al método FCM (de pago) que no estamos usando.
 
     private fun setupStaticUI() {
+        // Configurar Distancia
         binding.cardDistancia.tvSensorTitle.text = "Distancia"
+        binding.cardDistancia.ivSensorIcon.setImageResource(R.drawable.ic_distance)
+        
+        // Configurar Temperatura
         binding.cardTemperatura.tvSensorTitle.text = "Temperatura"
+        binding.cardTemperatura.ivSensorIcon.setImageResource(R.drawable.ic_thermostat)
+        
+        // Configurar Humedad
         binding.cardHumedad.tvSensorTitle.text = "Humedad"
-        binding.cardRuido.tvSensorTitle.text = "Nivel de Ruido"
+        binding.cardHumedad.ivSensorIcon.setImageResource(R.drawable.ic_humidity)
+        
+        // Configurar Ruido
+        binding.cardRuido.tvSensorTitle.text = "Ruido"
+        binding.cardRuido.ivSensorIcon.setImageResource(R.drawable.ic_volume)
     }
 
     private fun observeViewModel() {

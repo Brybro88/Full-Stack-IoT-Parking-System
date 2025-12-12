@@ -9,7 +9,7 @@ import com.google.firebase.database.database
 import com.example.parking_iot_app.data.ParkingData
 import com.google.firebase.Firebase
 import android.content.Context
-import com.example.parking_iot_app.utlils.NotificationHelper
+import com.example.parking_iot_app.utils.NotificationHelper
 
 // ¡CAMBIO! Ahora requiere un Contexto
 class FirebaseRepository(private val context: Context) {
@@ -71,25 +71,6 @@ class FirebaseRepository(private val context: Context) {
             Log.d("ParkingAppDebug", "dataAntes es NULL (es la primera carga). Omitiendo notificaciones.")
             return
         }
-
-        Log.d("ParkingAppDebug", "Comparando: [${dataAntes.estado}] -> [${dataAhora.estado}]")
-        Log.d("ParkingAppDebug", "Comparando Ruido: [${dataAntes.estado_ruido}] -> [${dataAhora.estado_ruido}]")
-        Log.d("ParkingAppDebug", "Comparando Temp: [${dataAntes.temperatura_c}] -> [${dataAhora.temperatura_c}]")
-        // --- FIN DEL LOG DE DEPURACIÓN ---
-
-        // --- DISPARADOR 1: Cambio de Libre a Ocupado ---
-        if (dataAntes.estado == "Libre" && dataAhora.estado == "Ocupado") {
-            Log.d("ParkingAppDebug", "¡DISPARADOR 1 (OCUPADO) DETECTADO! Enviando notificación.")
-            notificationHelper.sendNotification(
-                "Estacionamiento Ocupado",
-                "El lugar acaba de ser ocupado. (Distancia: ${dataAhora.distancia_cm} cm)"
-            )
-        }
-
-        // --- DISPARADOR 2: Alertas de Ruido (del ESP32) ---
-        if (dataAhora.estado_ruido != "Normal" && dataAntes.estado_ruido == "Normal") {
-            Log.d("ParkingAppDebug", "¡DISPARADOR 2 (RUIDO) DETECTADO! Enviando notificación.")
-            when (dataAhora.estado_ruido) {
                 "Alerta" -> notificationHelper.sendNotification(
                     "¡Alerta de Claxon Detectada!",
                     "Se detectó un ruido de ${dataAhora.nivel_sonido}. Podría ser un claxon o alarma."

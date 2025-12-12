@@ -1,5 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- UI Colors -->
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="primary_accent">#00E5FF</color> <!-- Cyan/Neon Blue -->
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B3B8</color>
+    
+    <!-- Status Colors -->
+    <color name="status_free">#00C853</color> <!-- Green -->
+    <color name="status_occupied">#D50000</color> <!-- Red -->
+    <color name="status_warning">#FFD600</color> <!-- Yellow -->
+    <color name="status_maneuver">#2962FF</color> <!-- Blue -->
 </resources>

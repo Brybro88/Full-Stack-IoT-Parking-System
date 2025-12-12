@@ -1,6 +1,7 @@
 
 // --- CONFIGURACIÓN ---
 const UPDATE_INTERVAL = 3000; // Actualizar cada 3 segundos
+const CONNECTION_TIMEOUT = 6000; // Timeout para considerar conexión perdida
 
 // --- ELEMENTOS DEL DOM ---
 const body = document.body;
@@ -15,11 +16,25 @@ const ruidoValue = document.getElementById('ruido-value');
 const logsTableBody = document.querySelector('#logs-table tbody');
 const ruidoAlertIcon = document.getElementById('ruido-alert-icon');
 
+// --- ELEMENTOS DEL HEADER ENTERPRISE ---
+const connectionLED = document.getElementById('connection-led');
+const connectionText = document.getElementById('connection-text');
+const quickOcupados = document.getElementById('quick-ocupados');
+const quickTemp = document.getElementById('quick-temp');
+const quickDist = document.getElementById('quick-dist');
+const notificationBtn = document.getElementById('notification-btn');
+const notificationBadge = document.getElementById('notification-badge');
+const profileBtn = document.getElementById('profile-btn');
+const profileDropdown = document.getElementById('profile-dropdown');
+
 // --- OBJETOS GLOBALES ---
 let distanciaGauge, temperaturaGauge, humedadGauge, ruidoGauge;
 let historyChart;
 let globalLogsData = [];
 let isFirstLoad = true;
+let lastDataReceived = Date.now();
+let notificationCount = 0;
+let isConnected = true;
 
 // =================================================
 // SISTEMA DE NOTIFICACIONES TOAST
@@ -243,6 +258,95 @@ function setupThemeToggle() {
         }
     });
 }
+
+// ==================================================
+// FUNCIONES DEL HEADER ENTERPRISE
+// ==================================================
+
+/**
+ * Actualiza el indicador de conexión en el header
+ */
+function updateConnectionStatus(connected) {
+    if (!connectionLED || !connectionText) return;
+    
+    if (connected !== isConnected) {
+        isConnected = connected;
+        
+        if (connected) {
+            connectionLED.classList.remove('disconnected');
+            connectionLED.classList.add('connected');
+            connectionText.textContent = 'Conectado';
+            showToast('Conexión restablecida', 'success', '', 2000);
+        } else {
+            connectionLED.classList.remove('connected');
+            connectionLED.classList.add('disconnected');
+            connectionText.textContent = 'Desconectado';
+            showToast('Se perdió la conexión', 'error', '', 3000);
+        }
+    }
+}
+
+/**
+ * Actualiza las badges de estadísticas rápidas en el header
+ */
+function updateQuickStats(status) {
+    if (!quickTemp || !quickDist || !quickOcupados) return;
+    
+    // Actualizar temperatura
+    const temp = parseFloat(status.temperatura_c);
+    if (!isNaN(temp)) {
+        quickTemp.textContent = `${Math.round(temp)}°`;
+    }
+    
+    // Actualizar distancia
+    const dist = parseFloat(status.distancia_cm);
+    if (!isNaN(dist)) {
+        quickDist.textContent = `${Math.round(dist)}cm`;
+    }
+    
+    // Actualizar estado de ocupación (basado en el estado)
+    const estado = status.estado || "Libre";
+    if (estado.toLowerCase().includes('ocupado')) {
+        quickOcupados.textContent = '1';
+    } else {
+        quickOcupados.textContent = '0';
+    }
+}
+
+/**
+ * Monitorea la última actualización de datos para detectar timeout
+ */
+function checkHeartbeat(timestamp) {
+    if (timestamp) {
+        lastDataReceived = Date.now();
+        updateConnectionStatus(true);
+    } else {
+        const timeSinceLastData = Date.now() - lastDataReceived;
+        if (timeSinceLastData > CONNECTION_TIMEOUT) {
+            updateConnectionStatus(false);
+        }
+    }
+}
+
+/**
+ * Configura el dropdown del perfil de usuario
+ */
+function setupProfileDropdown() {
+    if (!profileBtn || !profileDropdown) return;
+    
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.toggle('hidden');
+    });
+    
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', (e) => {
+        if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+            profileDropdown.classList.add('hidden');
+        }
+    });
+}
+
 /**
  * Llama a las APIs y actualiza el UI.
  */
@@ -276,6 +380,9 @@ async function fetchDataAndUpdate() {
  */
 function updateUI(status, logs) {
 
+    // === ACTUALIZAR HEADER ENTERPRISE ===
+    updateQuickStats(status);
+    checkHeartbeat(status.timestamp);
 
     const estado = status.estado || "Inicializando";
 
@@ -330,6 +437,7 @@ function updateUI(status, logs) {
         isFirstLoad = false;
     }
 }
+
 /**
  * Actualiza la tabla de historial de logs.
  */
@@ -348,6 +456,7 @@ function updateLogsTable(logs) {
         logsTableBody.innerHTML += row;
     });
 }
+
 /**
  * Actualiza la gráfica de historial principal.
  */
@@ -422,6 +531,7 @@ function updateHistoryChart(logs) {
         historyChart.update();
     }
 }
+
 // ==================================================
 // FUNCIÓN DEL MODAL AVANZADO (CON GRÁFICAS INTELIGENTES)
 // ==================================================
@@ -514,8 +624,14 @@ function openAdvancedModal(sensorType) {
 document.addEventListener('DOMContentLoaded', () => {
     initGauges();
     setupThemeToggle();
+    setupProfileDropdown();
     fetchDataAndUpdate();
     setInterval(fetchDataAndUpdate, UPDATE_INTERVAL);
+    
+    // Monitorear heartbeat
+    setInterval(() => {
+        checkHeartbeat(null);
+    }, 2000);
 
     document.addEventListener('click', function (event) {
         const expandIcon = event.target.closest('.expand-icon');

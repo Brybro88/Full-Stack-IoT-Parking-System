@@ -18,6 +18,76 @@ const statTempMax = document.getElementById('stat-temp-max');
 const statHumAvg = document.getElementById('stat-hum-avg');
 const statHumMax = document.getElementById('stat-hum-max');
 
+// --- ELEMENTOS DEL HEADER ENTERPRISE ---
+const connectionLED = document.getElementById('connection-led');
+const connectionText = document.getElementById('connection-text');
+const quickRegistros = document.getElementById('quick-registros');
+const quickOcupacion = document.getElementById('quick-ocupacion');
+const quickPeriodo = document.getElementById('quick-periodo');
+const profileBtn = document.getElementById('profile-btn');
+const profileDropdown = document.getElementById('profile-dropdown');
+
+// --- VARIABLES PARA HEADER ENTERPRISE ---
+let currentFilter = 'today';
+
+// =================================================
+// FUNCIONES DEL HEADER ENTERPRISE
+// =================================================
+
+/**
+ * Actualiza las badges de estadísticas rápidas del header
+ */
+function updateQuickStats(logs, filterType) {
+    if (!quickRegistros || !quickOcupacion || !quickPeriodo) return;
+    
+    // Actualizar total de registros
+    quickRegistros.textContent = logs.length;
+    
+    // Calcular porcentaje de ocupación
+    const totalEvents = logs.length;
+    const ocupados = logs.filter(log => log.estado === 'Ocupado').length;
+    const ocupacionPct = totalEvents > 0 ? Math.round((ocupados / totalEvents) * 100) : 0;
+    quickOcupacion.textContent = `${ocupacionPct}%`;
+    
+    // Actualizar período activo
+    const periodos = {
+        'today': 'Hoy',
+        '7days': '7 días',
+        'all': 'Total'
+    };
+    quickPeriodo.textContent = periodos[filterType] || 'Hoy';
+}
+
+/**
+ * Actualiza el indicador de conexión (siempre conectado en analytics)
+ */
+function updateConnectionStatus() {
+    if (!connectionLED || !connectionText) return;
+    
+    connectionLED.classList.remove('disconnected');
+    connectionLED.classList.add('connected');
+    connectionText.textContent = 'Conectado';
+}
+
+/**
+ * Configura el dropdown del perfil de usuario
+ */
+function setupProfileDropdown() {
+    if (!profileBtn || !profileDropdown) return;
+    
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.toggle('hidden');
+    });
+    
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', (e) => {
+        if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+            profileDropdown.classList.add('hidden');
+        }
+    });
+}
+
 /**
  * Función principal
  */
@@ -25,6 +95,10 @@ async function initAnalytics() {
     try {
         const response = await fetch('/api/logs/all');
         allLogs = await response.json();
+        
+        // Actualizar conexión
+        updateConnectionStatus();
+        
         processData('today');
     } catch (error) {
         console.error("Error al cargar todos los logs:", error);
@@ -35,8 +109,12 @@ async function initAnalytics() {
  * Filtra los logs y actualiza todos los componentes del dashboard
  */
 function processData(filterType) {
+    currentFilter = filterType;
     const filteredLogs = filterLogs(allLogs, filterType);
     const stats = calculateStats(filteredLogs);
+    
+    // === ACTUALIZAR HEADER ENTERPRISE ===
+    updateQuickStats(filteredLogs, filterType);
     
     renderStats(stats);
     renderDonutChart(stats);
@@ -345,6 +423,7 @@ function renderDonutChart(stats) {
         stateDonutChart.render();
     }
 }
+
 /**
  * Dibuja la gráfica de dona para el Porcentaje de Tiempo
  */
@@ -361,7 +440,7 @@ function renderTimeDonutChart(stats) {
         series: [pctLibre, pctOcupado, pctManiobra],
         chart: {
             type: 'donut',
-            height: 380 // (Ajustado desde 250 a 380 para consistencia)
+            height: 380
         },
         labels: ['% Tiempo Libre', '% Tiempo Ocupado', '% Maniobra'],
         colors: ['#28a745', '#dc3545', '#ffc107'],
@@ -377,7 +456,6 @@ function renderTimeDonutChart(stats) {
         }
     };
 
-    // Asegurarse de que el elemento exista antes de intentar renderizar
     const chartEl = document.querySelector("#time-donut-chart");
     if (!chartEl) {
         console.error("#time-donut-chart no encontrado!");
@@ -395,6 +473,10 @@ function renderTimeDonutChart(stats) {
 
 // --- INICIO DE LA APLICACIÓN DE ANÁLISIS ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar header enterprise
+    setupProfileDropdown();
+    
+    // Inicializar analytics
     initAnalytics();
     
     filterButtons.forEach(btn => {
@@ -452,4 +534,4 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-});s
+});
