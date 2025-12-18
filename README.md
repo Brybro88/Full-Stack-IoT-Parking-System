@@ -1,97 +1,79 @@
-# Full-Stack-IoT-Parking-System
-Sistema de monitoreo de estacionamiento con ESP32, Firebase, Node.js (Web), app en Android (Kotlin) y análisis de datos en R.
-# Sistema Inteligente de Monitoreo de Estacionamiento (Full-Stack IoT)
+Sistema Integral de Monitoreo de Estacionamientos (IoT Full-Stack)
 
-Un proyecto completo de IoT que monitorea un espacio de estacionamiento en tiempo real, envía datos a la nube, muestra el estado en un dashboard web y una app móvil, y analiza los datos históricos de ocupación.
+Un sistema completo de ingeniería IoT diseñado para monitorear, gestionar y analizar la ocupación de espacios de estacionamiento en tiempo real. Este proyecto integra hardware embebido, computación en la nube, interfaces web/móviles y ciencia de datos.
 
-![GIF de tu Dashboard Web en acción]
-*(Sube un GIF o una captura de pantalla de tu dashboard web funcionando)*
+📋 Resumen Ejecutivo
 
----
+El sistema resuelve la problemática de la gestión ineficiente de espacios mediante un nodo sensor autónomo. Provee visualización en tiempo real con una latencia <2s y herramientas de análisis histórico para la toma de decisiones basada en datos.
 
-## 🚀 Sobre el Proyecto
+🏗️ Arquitectura del Sistema
 
-Este proyecto es una solución integral "end-to-end" que demuestra el flujo completo de datos desde un sensor físico hasta un análisis de Business Intelligence. El sistema detecta el estado de un estacionamiento (Libre, Ocupado, Maniobra) y monitorea el ambiente (Temperatura, Humedad, Ruido) en tiempo real.
+El proyecto consta de 5 módulos interconectados:
 
----
+Hardware (Edge Computing):
 
-## 🛠️ Stack Tecnológico (Arquitectura)
+Microcontrolador: ESP32 (Programado en C++ con PlatformIO).
 
-Este proyecto está dividido en 5 componentes principales:
+Sensores: HC-SR04 (Ultrasonido), DHT22 (Ambiente), KY-037 (Ruido).
 
-1.  **Hardware (Dispositivo IoT):**
-    * **Microcontrolador:** ESP32-WROOM-32
-    * **Sensores:** HC-SR04 (Distancia), DHT22 (Temp/Hum), KY-037 (Sonido).
-    * **Entorno:** PlatformIO en VS Code (C++).
+Funciones: Filtrado de señal, gestión de conexión WiFi/Firebase y lógica de estados (Libre/Ocupado).
 
-2.  **Base de Datos (Nube):**
-    * **Google Firebase** (Realtime Database) para ingesta de datos en tiempo real.
+Ubicación: /1-Hardware-ESP32
 
-3.  **Dashboard Web (Backend & Frontend):**
-    * **Backend:** Node.js + Express (para la API REST).
-    * **Frontend:** EJS (HTML dinámico), CSS3 y JavaScript (ES6+).
-    * **Visualización:** ApexCharts.js (Gráficas) y Gauge.js (Medidores).
+Backend & Cloud:
 
-4.  **Aplicación Móvil (Nativa):**
-    * **Plataforma:** Android (Nativa).
-    * **Lenguaje:** Kotlin.
-    * **Arquitectura:** MVVM (ViewModel, LiveData, Repository).
-    * **Conexión:** SDK de Firebase.
+Base de Datos: Google Firebase Realtime Database.
 
-5.  **Análisis de Datos:**
-    * **Entorno:** RStudio.
-    * **Librerías:** Tidyverse (`dplyr`, `ggplot2`) y `jsonlite`.
+Seguridad: Autenticación por tokens y reglas de seguridad estrictas.
 
----
+Dashboard Web (Administración):
 
-## 🌟 Características Principales
+Stack: Node.js, Express, EJS.
 
-* **Monitoreo en Vivo:** El dashboard web y la app de Android se actualizan en tiempo real.
-* **Análisis Histórico:** Página de "Análisis" con filtros de fecha (Hoy, 7 Días) para estudiar patrones.
-* **Visualización Avanzada:**
-    * Mapa de calor (Heatmap) 24x7 para identificar horas pico.
-    * Gráficas de tendencia para temperatura, humedad y ruido ambiental.
-    * Gráficas de dona para ver la distribución de estados (Libre vs. Ocupado).
-* **Alertas Inteligentes:** Detección de ruido "Anormal" (comparado con el promedio) y alertas de claxon.
-* **Hardware Personalizado:** Case impreso en 3D (`.stl` incluido) y diseño de placa fenólica.
+Aplicación Móvil (Usuario Final):
 
----
+Stack: Android Nativo (Kotlin), MVVM Architecture.
 
-## 📂 Estructura del Repositorio
+Features: Monitoreo en tiempo real y notificaciones locales en segundo plano (Foreground Service).
 
-* `./1-Hardware-ESP32/`: Código de PlatformIO (C++) para el microcontrolador ESP32.
-* `./2-Web-Dashboard/`: Código del servidor Node.js y el frontend EJS/CSS/JS.
-* `./3-Android-App/`: Proyecto de Android Studio (Kotlin).
-* `./4-Data-Analysis-R/`: Scripts de R (`.R`) y datos JSON exportados para el análisis.
-* `./5-Hardware-Design/`: Archivos `.stl` y capturas de pantalla del diseño del case en Tinkercad.
 
----
+Ciencia de Datos (Analytics):
 
-## 🏁 Cómo Empezar
+Stack: Lenguaje R (RStudio, Tidyverse).
 
-### 1. Hardware (ESP32)
-1.  Abrir la carpeta `1-Hardware-ESP32` en VS Code con PlatformIO.
-2.  Ajustar las credenciales de WiFi y Firebase (Database Secret) en `src/main.cpp`.
-3.  Compilar y subir al ESP32.
+Análisis: Procesamiento de logs históricos para mapas de calor (ocupación por hora) y correlación de variables ambientales.
 
-### 2. Dashboard Web
-1.  `cd 2-Web-Dashboard`
-2.  Descargar la `serviceAccountKey.json` de Firebase y guardarla en esta carpeta (está en `.gitignore`).
-3.  `npm install`
-4.  `node index.js`
-5.  Abrir `http://localhost:3000` en el navegador.
 
-### 3. App de Android
-1.  Abrir la carpeta `3-Android-App` en Android Studio.
-2.  Conectar el proyecto a Firebase usando el asistente (`Tools > Firebase`).
-3.  Ejecutar en un emulador o dispositivo físico.
+🚀 Características Destacadas
 
-### 4. Análisis de Datos
-1.  Exportar los datos de `/parking_logs` como JSON desde Firebase.
-2.  Colocar el `parking_logs.json` en la carpeta `4-Data-Analysis-R`.
-3.  Abrir el proyecto `.Rproj` en RStudio y ejecutar el script `.R`.
+Sincronización Total: El ESP32 utiliza NTP para sincronización de tiempo UTC, garantizando coherencia en los logs globales.
 
----
+Robustez: Implementación de reconexión automática y manejo de errores en el firmware.
 
-## 📊 Muestra de Análisis (Hecho en R)
-![alt text](<Screenshot 2025-11-14 162458-1.png>) ![alt text](<Screenshot 2025-11-14 162723-1.png>)
+UI Avanzada: Uso de indicadores visuales (Gauges) y gráficas interactivas en ambas plataformas (Web y Móvil).
+
+Eficiencia: El sistema utiliza un método híbrido de transmisión de datos (Estado en Tiempo Real + Logs Históricos) para optimizar el ancho de banda.
+
+🛠️ Instalación y Despliegue
+
+Requisitos Previos
+
+Cuenta de Google Firebase.
+
+ESP32 y sensores compatibles.
+
+Node.js instalado localmente.
+
+Instrucciones Rápidas
+
+Hardware: Abrir la carpeta 1-Hardware-ESP32 en VS Code (PlatformIO), configurar credenciales WiFi en main.cpp y subir al dispositivo.
+
+Web: Navegar a 2-Web-Dashboard, colocar el archivo serviceAccountKey.json en la raíz, ejecutar npm install y luego node index.js.
+
+Móvil: Abrir 3-Android-App en Android Studio y sincronizar Gradle.
+
+📊 Galería
+
+
+Autor: Brayan Ezequiel García Ibarra
+**Contacto +1 (979)422-0880
